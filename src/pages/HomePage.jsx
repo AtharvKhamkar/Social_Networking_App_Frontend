@@ -1,4 +1,5 @@
 import React from 'react';
+import Test from '../Test';
 import PostCard from '../components/PostCard';
 import UserProfileCard from '../components/UserProfileCard';
 
@@ -12,6 +13,7 @@ const HomePage = () => {
         <PostCard />
         <PostCard />
         <PostCard />
+        <Test />
       </div>
       <UserProfileCard />
     </div>

@@ -4,7 +4,7 @@ import './App.css';
 import { loginUser, logoutUser } from './features/userRequest';
 import { selectAuth } from './features/userSlice';
 
-function Test() {
+function  Test() {
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

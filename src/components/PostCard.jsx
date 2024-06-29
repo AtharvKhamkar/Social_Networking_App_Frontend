@@ -3,6 +3,7 @@ import commentIcon from '../assets/comment.png';
 import likeIcon from '../assets/like.png';
 import sendRequestIcon from '../assets/send_request.png';
 import shareIcon from '../assets/share.png';
+import Button from './Button';
 
 const PostCard = () => {
   return (
