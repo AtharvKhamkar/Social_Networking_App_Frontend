@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { getUserPost } from './postRequest';
 import { loginUser, logoutUser, signupUser } from './userRequest';
 
 const initialState = {
@@ -40,7 +41,6 @@ export const authSlice = createSlice({
             .addCase(loginUser.fulfilled, (state, action) => {
                 state.status = 'succeeded'
                 state.user = action.payload.user
-                state.posts = action.payload.posts
                 state.token = action.payload.accessToken      
             })
             .addCase(loginUser.rejected, (state, action) => {
@@ -58,7 +58,6 @@ export const authSlice = createSlice({
             .addCase(logoutUser.fulfilled, (state) => {
                 state.status = 'succeeded';
                 state.user = null;
-                state.posts = null;
                 state.token = null;
             })
             .addCase(logoutUser.rejected, (state, action) => {
@@ -74,11 +73,23 @@ export const authSlice = createSlice({
             .addCase(signupUser.fulfilled, (state,action) => {
                 state.status = 'succeeded';
                 state.user = action.payload.user
-                state.posts = action.payload.posts
             })
             .addCase(signupUser.rejected, (state,action) => {
                 state.status = 'failed';
                 state.error = action.payload || 'failed to signup'
+            })
+        
+            //cases for fetching user posts
+            .addCase(getUserPost.pending, (state) => {
+                state.status = 'pending'
+            })
+            .addCase(getUserPost.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.posts = action.payload;
+            })
+            .addCase(getUserPost.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.payload || 'failed to fetch user posts';
         })
     }
 })
@@ -86,5 +97,6 @@ export const authSlice = createSlice({
 export const { setMode, setLogin, setLogout, setPosts } = authSlice.actions;
 
 export const selectAuth = (state) => state.auth;
+export const selectUserPosts = (state) => state.auth.posts;
 
 export default authSlice.reducer;

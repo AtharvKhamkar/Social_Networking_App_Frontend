@@ -3,20 +3,19 @@ import commentIcon from '../assets/comment.png';
 import likeIcon from '../assets/like.png';
 import sendRequestIcon from '../assets/send_request.png';
 import shareIcon from '../assets/share.png';
-import Button from './Button';
 
-const PostCard = () => {
+const PostCard = ({ post, avatar }) => {
   return (
     <div className='w-full bg-white rounded-lg p-4 text-gray-400'>
       <div className='flex justify-between items-center my-2'>
         <div className='flex gap-4'>
           <img
-            src='https://www.shutterstock.com/image-photo/profile-picture-smiling-successful-young-260nw-2040223583.jpg'
+            src={avatar}
             alt='profile-image'
             className='rounded-full w-12 h-12 object-cover'
           />
           <div>
-            <p className='text-gray-500 font-semibold'>Apple IceCream</p>
+            <p className='text-gray-500 font-semibold'>{post.owner}</p>
             <p className='text-sm'>New York, CA</p>
           </div>
         </div>
@@ -24,11 +23,10 @@ const PostCard = () => {
           <img src={sendRequestIcon} alt='send-request' className='w-5 h-5' />
         </div>
       </div>
-      <p className='text-gray-500'>Some really long description</p>
+      <p className='text-gray-500'>{post.description}</p>
       <div>
         <img
-          src='https://images.pexels.com/photos/24244035/pexels-photo-24244035/free-photo-of-elephant-by-river.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load'
-          alt='post-image'
+          src={post.content}
           className='rounded-lg w-full h-auto object-cover'
         />
       </div>

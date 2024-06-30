@@ -6,18 +6,18 @@ import LocationIcon from '../assets/location.png';
 import profileIcon from '../assets/profile_setting.png';
 import twitterIcon from '../assets/twitter.png';
 
-const UserProfileCard = () => {
+const UserProfileCard = ({ children }) => {
   return (
     <div className='w-1/3 p-4 bg-white rounded-lg h-1/3'>
       <div className='flex justify-between pb-4'>
         <div className='flex'>
           <img
-            src='https://www.shutterstock.com/image-photo/profile-picture-smiling-successful-young-260nw-2040223583.jpg'
+            src={children.avatar}
             alt='profile-image'
             className='rounded-full w-16 h-16 object-cover'
           />
           <div className='m-2'>
-            <p className='font-semibold'>Apple IceCreame</p>
+            <p className='font-semibold'>{children.userName}</p>
             <p className='text-gray-400 text-sm'>0 friends</p>
           </div>
         </div>
