@@ -1,77 +1,110 @@
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import './App.css';
-import { loginUser, logoutUser } from './features/userRequest';
-import { selectAuth } from './features/userSlice';
+import React, { useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import Button from './components/Button';
+import Input from './components/Input';
+import { signupUser } from './features/userRequest';
 
-function  Test() {
-  const [userName, setUserName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [response, setResponse] = useState('');
+const Test = () => {
+  const { register, handleSubmit, setValue } = useForm();
   const [error, setError] = useState('');
   const dispatch = useDispatch();
-  const auth = useSelector(selectAuth);
-  const token = auth.token;
+  const navigate = useNavigate();
 
-  const BASE_URL =
-    'https://social-networking-app.onrender.com/api/v1/users/login';
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const requestData = {
-      userName,
-      email,
-      password,
-    };
-
-    dispatch(loginUser(requestData));
+  const onDropAvatar = (acceptedFiles) => {
+    setValue('avatar', acceptedFiles[0]);
   };
 
-  const handleLogout = (e) => {
-    e.preventDefault();
+  const onDropCoverImage = (acceptedFiles) => {
+    setValue('coverImage', acceptedFiles[0]);
+  };
 
-    dispatch(logoutUser({ token }));
+  const {
+    getRootProps: getRootPropsAvatar,
+    getInputProps: getInputPropsAvatar,
+  } = useDropzone({ onDrop: onDropAvatar });
+  const {
+    getRootProps: getRootPropsCoverImage,
+    getInputProps: getInputPropsCoverImage,
+  } = useDropzone({ onDrop: onDropCoverImage });
+
+  const signup = async (data) => {
+    setError('');
+    try {
+      await dispatch(signupUser(data));
+      navigate('/');
+    } catch (error) {
+      setError(error.message);
+      console.log(error);
+    }
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div className='flex'>
-          <label htmlFor='userName'>Username</label>
-          <input
-            type='text'
-            placeholder='Enter your username'
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-          />
-        </div>
-        <div className='flex'>
-          <label htmlFor='email'>Email</label>
-          <input
-            type='text'
-            placeholder='Enter your email'
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className='flex'>
-          <label htmlFor='password'>Password</label>
-          <input
-            type='password'
-            placeholder='Enter your password'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <button type='submit'>Login</button>
-      </form>
-      <button onClick={handleLogout}>Logout</button>
-      <div>{auth && <p> Response: {JSON.stringify(auth)}</p>}</div>
-      <div>{error && <p>Error: {JSON.stringify(error?.message)}</p>}</div>
+    <div className='w-full min-h-screen bg-[#eeeeee] py-8'>
+      <div className='w-1/2 bg-[#ffffff] flex flex-col justify-center rounded-lg mx-auto p-4'>
+        <p className='text-start text-md font-bold'>Create an account</p>
+        {error && <p className='text-red-500 mt-8 text-center'>{error}</p>}
+        <form onSubmit={handleSubmit(signup)}>
+          <div className='space-y-5'>
+            <Input
+              label='Name'
+              placeholder='Enter your name'
+              type='text'
+              {...register('name', {
+                required: true,
+              })}
+            />
+            <Input
+              label='Username'
+              placeholder='Enter your username'
+              type='text'
+              {...register('userName', {
+                required: true,
+              })}
+            />
+            <Input
+              label='Email'
+              placeholder='Enter your email'
+              type='email'
+              {...register('email', {
+                required: true,
+                validate: {
+                  matchPattern: (value) =>
+                    /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
+                    'Email address must be a valid address',
+                },
+              })}
+            />
+            <Input
+              label='Password'
+              placeholder='Enter your password'
+              type='password'
+              {...register('password', {
+                required: true,
+              })}
+            />
+            <Input
+              label='Bio'
+              placeholder='Tell us about yourself'
+              type='text'
+              {...register('bio')}
+            />
+            <div {...getRootPropsAvatar()} className='dropzone'>
+              <input {...getInputPropsAvatar()} />
+              <p>Drag 'n' drop an avatar image, or click to select one</p>
+            </div>
+            <div {...getRootPropsCoverImage()} className='dropzone'>
+              <input {...getInputPropsCoverImage()} />
+              <p>Drag 'n' drop a cover image, or click to select one</p>
+            </div>
+            <Button children='Sign Up' type='submit' />
+          </div>
+        </form>
+      </div>
     </div>
   );
-}
+};
 
 export default Test;

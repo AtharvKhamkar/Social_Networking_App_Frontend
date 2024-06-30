@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { loginUser, logoutUser } from './userRequest';
+import { loginUser, logoutUser, signupUser } from './userRequest';
 
 const initialState = {
     mode: "light",
@@ -64,6 +64,21 @@ export const authSlice = createSlice({
             .addCase(logoutUser.rejected, (state, action) => {
                 state.status = 'failed',
                 state.error = action.payload || 'failed to logout'
+            })
+        
+        //cases for signup user
+            .addCase(signupUser.pending, (state) => {
+                state.status = 'loading';
+                state.error = null;
+            })
+            .addCase(signupUser.fulfilled, (state,action) => {
+                state.status = 'succeeded';
+                state.user = action.payload.user
+                state.posts = action.payload.posts
+            })
+            .addCase(signupUser.rejected, (state,action) => {
+                state.status = 'failed';
+                state.error = action.payload || 'failed to signup'
         })
     }
 })

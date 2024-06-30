@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import { loginUser } from '../features/userRequest';
-import { selectAuth } from '../features/userSlice';
 
 const LoginPage = () => {
   const { register, handleSubmit } = useForm();
@@ -17,6 +16,7 @@ const LoginPage = () => {
     setError('');
     try {
       await dispatch(loginUser(data));
+      navigate('/');
     } catch (error) {
       setError(error.message);
     }
