@@ -8,6 +8,7 @@ import './index.css';
 import HomePage from './pages/HomePage.jsx';
 import Layout from './pages/Layout.jsx';
 import LoginPage from './pages/LoginPage.jsx';
+import ProfilePage from './pages/ProfilePage.jsx';
 import SignupPage from './pages/SignupPage.jsx';
 
 const route = createBrowserRouter([
@@ -30,6 +31,10 @@ const route = createBrowserRouter([
       {
         path: '/Test',
         element: <Test />,
+      },
+      {
+        path: '/:userName',
+        element: <ProfilePage />,
       },
     ],
   },

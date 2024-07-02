@@ -4,6 +4,7 @@ import {
   darkModeIcon,
   helpIcon,
   notificationIcon,
+  searchIcon,
 } from '../../assets/index';
 import CurrentUser from './CurrentUser';
 import SearchBox from './SearchBox';
@@ -27,14 +28,14 @@ const Header = () => {
     },
   ];
   return (
-    <header className='bg-[#ffffff] mb-8 py-4 px-32'>
+    <header className='bg-[#ffffff] my-6 px-32'>
       <div className='flex justify-between items-center'>
-        <div className='flex'>
+        <div className='flex items-center'>
           <p className='text-4xl font-bold text-[#12cdf2]'>Sociopedia</p>
-          <SearchBox placeholder='Search' />
+          <SearchBox placeholder='Search' icon={searchIcon} />
         </div>
-        <div className='flex'>
-          <ul className='flex list-none'>
+        <div className='flex items-center'>
+          <ul className='flex list-none items-center'>
             <li>
               <button onClick={() => {}}>
                 <img src={darkModeIcon} alt='dark-mode' className='w-6 h-6' />
@@ -49,7 +50,7 @@ const Header = () => {
                 </li>
               ))}
           </ul>
-          <CurrentUser children='Apple IceCream' />
+          <CurrentUser />
         </div>
       </div>
     </header>

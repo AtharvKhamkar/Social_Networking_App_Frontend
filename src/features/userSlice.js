@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getUserFeed } from './postRequest';
+import { getUserFeed, uploadPost } from './postRequest';
 import { loginUser, logoutUser, signupUser, userprofile } from './userRequest';
 
 const initialState = {
@@ -90,6 +90,17 @@ export const authSlice = createSlice({
             .addCase(userprofile.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.payload || "failed to fetch user profile"
+            })
+            .addCase(uploadPost.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(uploadPost.fulfilled, (state, action) => {
+                state.status = 'Succeeded';
+                state.user.user.posts.push(action.payload._id)
+            })
+            .addCase(uploadPost.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.payload || 'Error while uploading post'
         })
     }
 })

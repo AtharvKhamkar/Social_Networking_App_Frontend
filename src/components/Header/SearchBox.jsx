@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import searchIcon from '../../assets/search.png';
 const SearchBox = React.forwardRef(function SearchBox(
-  { placeholder, type = 'text', className = '', ...props },
+  { placeholder, icon, iconStatus=false, type = 'text', className = '', ...props },
   ref
 ) {
   {
@@ -19,7 +19,12 @@ const SearchBox = React.forwardRef(function SearchBox(
           ref={ref}
           {...props}
         />
-        <img src={searchIcon} alt='search-icon' className='w-5 h-5' />
+        <img
+          hidden= {iconStatus}
+          src={searchIcon}
+          alt='search-icon'
+          className='w-5 h-5'
+        />
       </div>
     );
   }

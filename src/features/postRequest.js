@@ -26,3 +26,35 @@ export const getUserFeed = createAsyncThunk(
         }
     }
 )
+
+export const uploadPost = createAsyncThunk(
+    'posts/upload',
+    async ({ description, content,token }, { rejectWithValue }) => {
+        const formData = new FormData();
+        formData.append('description', description);
+        if (content) {
+            formData.append('content', content);
+        }
+
+        try {
+            const response = await axios({
+                method: 'POST',
+                url: `${POST_URL}/posts/upload`,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization':`Bearer ${token}`
+                },
+                data: formData
+            })
+
+            return response.data.response;
+            
+        } catch (error) {
+            if (!error.message) {
+                throw error;
+            }
+
+            return rejectWithValue(error.response.data)
+        }
+    }
+)

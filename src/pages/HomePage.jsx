@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PostCard from '../components/PostCard';
+import ProfileDetailCard from '../components/ProfileDetailCard';
 import SuggestedFriendCard from '../components/SuggestedFriendCard';
+import UploadPost from '../components/UploadPost';
 import UserProfileCard from '../components/UserProfileCard';
 import { getUserFeed } from '../features/postRequest';
 import { userprofile } from '../features/userRequest';
@@ -49,6 +51,7 @@ const HomePage = () => {
         )}
       </div>
       <div className='w-2/3 flex flex-col gap-8'>
+        <UploadPost token={auth.token} />
         {userPosts && userPosts.length > 0 ? (
           userPosts.map((post, index) => (
             <PostCard key={index} post={post} avatar={user.user.avatar} />
@@ -56,6 +59,7 @@ const HomePage = () => {
         ) : (
           <p>No posts are available!</p>
         )}
+        <ProfileDetailCard />
       </div>
       <div className='w-1/3 space-y-5'>
         {userProfile ? (

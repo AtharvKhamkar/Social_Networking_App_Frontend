@@ -10,15 +10,20 @@ import { signupUser } from '../features/userRequest';
 const SignupPage = () => {
   const { register, handleSubmit, setValue } = useForm();
   const [error, setError] = useState();
+  const [avatarFile, setAvatarFile] = useState();
+  const [coverFile, setCoverfile] = useState(null);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const onDropAvatar = (acceptedFiles) => {
     setValue('avatar', acceptedFiles[0]);
+    setAvatarFile(acceptedFiles[0]);
   };
 
   const onDropCoverImage = (acceptedFiles) => {
     setValue('coverImage', acceptedFiles[0]);
+    setCoverfile(acceptedFiles[0]);
   };
 
   const {
@@ -93,13 +98,23 @@ const SignupPage = () => {
               type='text'
               {...register('bio')}
             />
-            <div {...getRootPropsAvatar()}>
+            <div
+              className='border h-16 m-2 rounded-lg flex items-center justify-center cursor-pointer hover:border-[#03d0fa] text-gray-500'
+              {...getRootPropsAvatar()}
+            >
               <input {...getInputPropsAvatar()} />
-              <p>Drag and drop avatar image here or click to select file</p>
+              {avatarFile ? (
+                <p>{avatarFile.name}</p>
+              ) : (
+                <p>Select Avatar Image</p>
+              )}
             </div>
-            <div {...getRootPropsCoverImage()}>
+            <div
+              className='border h-16 m-2 rounded-lg flex items-center justify-center cursor-pointer hover:border-[#03d0fa] text-gray-500'
+              {...getRootPropsCoverImage()}
+            >
               <input {...getInputPropsCoverImage()} />
-              <p>Drag and drop cover image here or click to select file</p>
+              {coverFile ? <p>{coverFile.name}</p> : <p>Select Cover Image</p>}
             </div>
             <Button children='Signup' type='submit' />
           </div>

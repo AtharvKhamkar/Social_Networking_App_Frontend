@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import BagIcon from '../assets/bag.png';
 import editIcon from '../assets/edit.png';
 import linkedInIcon from '../assets/linkedin.png';
@@ -11,24 +12,26 @@ const UserProfileCard = ({ children }) => {
 
   return (
     <div className='w-full p-4 bg-white rounded-lg'>
-      <div className='flex justify-between pb-4'>
-        <div className='flex'>
-          <img
-            src={children.user.avatar}
-            alt='profile-image'
-            className='rounded-full w-16 h-16 object-cover'
-          />
-          <div className='m-2'>
-            <p className='font-semibold'>{children.user.userName}</p>
-            <p className='text-gray-400 text-sm'>
-              {children?.user.bio || 'Bio'}
-            </p>
+      <Link to={`/${children.user.userName}`}>
+        <div className='flex justify-between pb-4'>
+          <div className='flex'>
+            <img
+              src={children.user.avatar}
+              alt='profile-image'
+              className='rounded-full w-16 h-16 object-cover'
+            />
+            <div className='m-2'>
+              <p className='font-semibold'>{children.user.userName}</p>
+              <p className='text-gray-400 text-sm'>
+                {children?.user.bio || 'Bio'}
+              </p>
+            </div>
+          </div>
+          <div className='flex  items-center'>
+            <img src={profileIcon} alt='profile-icon' className='w-7 h-7' />
           </div>
         </div>
-        <div className='flex  items-center'>
-          <img src={profileIcon} alt='profile-icon' className='w-7 h-7' />
-        </div>
-      </div>
+      </Link>
       <hr className='border-gray-300 border-t-2' />
       <div className='flex p-1 my-2'>
         <img src={LocationIcon} alt='location-icon' className='w-6 h-6 mr-2' />
