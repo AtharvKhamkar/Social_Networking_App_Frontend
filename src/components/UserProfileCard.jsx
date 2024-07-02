@@ -7,18 +7,22 @@ import profileIcon from '../assets/profile_setting.png';
 import twitterIcon from '../assets/twitter.png';
 
 const UserProfileCard = ({ children }) => {
+  console.log(children);
+
   return (
-    <div className='w-1/3 p-4 bg-white rounded-lg h-1/3'>
+    <div className='w-full p-4 bg-white rounded-lg'>
       <div className='flex justify-between pb-4'>
         <div className='flex'>
           <img
-            src={children.avatar}
+            src={children.user.avatar}
             alt='profile-image'
             className='rounded-full w-16 h-16 object-cover'
           />
           <div className='m-2'>
-            <p className='font-semibold'>{children.userName}</p>
-            <p className='text-gray-400 text-sm'>0 friends</p>
+            <p className='font-semibold'>{children.user.userName}</p>
+            <p className='text-gray-400 text-sm'>
+              {children?.user.bio || 'Bio'}
+            </p>
           </div>
         </div>
         <div className='flex  items-center'>
@@ -36,12 +40,16 @@ const UserProfileCard = ({ children }) => {
       </div>
       <hr className='border-gray-300 border-t-2' />
       <div className='flex justify-between py-4'>
-        <p className='text-gray-400 text-sm'>Who viewed your profile</p>
-        <span className='text-gray-500 text-sm font-semibold'>6790</span>
+        <p className='text-gray-400 text-sm'>Followers</p>
+        <span className='text-gray-500 text-sm font-semibold'>
+          {children.followers}
+        </span>
       </div>
       <div className='flex justify-between pb-2'>
-        <p className='text-gray-400 text-sm'>Impression of your post</p>
-        <span className='text-gray-500 text-sm font-semibold'>7850</span>
+        <p className='text-gray-400 text-sm'>Following</p>
+        <span className='text-gray-500 text-sm font-semibold'>
+          {children.following}
+        </span>
       </div>
       <hr className='border-gray-300 border-t-2' />
       <div className='py-4'>

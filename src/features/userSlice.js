@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getUserPost } from './postRequest';
-import { loginUser, logoutUser, signupUser } from './userRequest';
+import { getUserFeed } from './postRequest';
+import { loginUser, logoutUser, signupUser, userprofile } from './userRequest';
 
 const initialState = {
     mode: "light",
@@ -20,17 +20,6 @@ export const authSlice = createSlice({
         setMode: (state) => {
             state.mode = state.mode === "light" ? "dark" : "light"; 
         },
-        setLogin: (state, action) => {
-            state.user = action.payload.user;
-            state.token = action.payload.token;
-        },
-        setLogout: (state) => {
-            state.user = null;
-            state.token = null;
-        },
-        setPosts: (state, action) => {
-            state.posts = action.payload.posts
-        }
     },
     extraReducers: (builder) => {
         builder
@@ -40,7 +29,6 @@ export const authSlice = createSlice({
             })
             .addCase(loginUser.fulfilled, (state, action) => {
                 state.status = 'succeeded'
-                state.user = action.payload.user
                 state.token = action.payload.accessToken      
             })
             .addCase(loginUser.rejected, (state, action) => {
@@ -57,7 +45,6 @@ export const authSlice = createSlice({
             })
             .addCase(logoutUser.fulfilled, (state) => {
                 state.status = 'succeeded';
-                state.user = null;
                 state.token = null;
             })
             .addCase(logoutUser.rejected, (state, action) => {
@@ -72,7 +59,6 @@ export const authSlice = createSlice({
             })
             .addCase(signupUser.fulfilled, (state,action) => {
                 state.status = 'succeeded';
-                state.user = action.payload.user
             })
             .addCase(signupUser.rejected, (state,action) => {
                 state.status = 'failed';
@@ -80,16 +66,30 @@ export const authSlice = createSlice({
             })
         
             //cases for fetching user posts
-            .addCase(getUserPost.pending, (state) => {
+            .addCase(getUserFeed.pending, (state) => {
                 state.status = 'pending'
             })
-            .addCase(getUserPost.fulfilled, (state, action) => {
+            .addCase(getUserFeed.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.posts = action.payload;
             })
-            .addCase(getUserPost.rejected, (state, action) => {
+            .addCase(getUserFeed.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.payload || 'failed to fetch user posts';
+            })
+        
+        //cases for fetching user profile
+            .addCase(userprofile.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(userprofile.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.user = action.payload;
+                state.error = action.payload.error;
+            })
+            .addCase(userprofile.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.payload || "failed to fetch user profile"
         })
     }
 })
@@ -97,6 +97,7 @@ export const authSlice = createSlice({
 export const { setMode, setLogin, setLogout, setPosts } = authSlice.actions;
 
 export const selectAuth = (state) => state.auth;
+export const selectUserProfile = (state) => state.auth.user;
 export const selectUserPosts = (state) => state.auth.posts;
 
 export default authSlice.reducer;
