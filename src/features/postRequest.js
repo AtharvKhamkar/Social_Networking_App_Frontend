@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const POST_URL = 'https://social-networking-app.onrender.com/api/v1';
+const POST_URL = 'http://localhost:9090/api/v1';
 
 export const getUserFeed = createAsyncThunk(
     'posts/userposts',

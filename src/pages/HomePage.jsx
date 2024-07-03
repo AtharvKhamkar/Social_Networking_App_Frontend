@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PostCard from '../components/PostCard';
-import ProfileDetailCard from '../components/ProfileDetailCard';
 import SuggestedFriendCard from '../components/SuggestedFriendCard';
 import UploadPost from '../components/UploadPost';
 import UserProfileCard from '../components/UserProfileCard';
@@ -59,14 +58,8 @@ const HomePage = () => {
         ) : (
           <p>No posts are available!</p>
         )}
-        <ProfileDetailCard />
       </div>
       <div className='w-1/3 space-y-5'>
-        {userProfile ? (
-          <UserProfileCard children={userProfile} />
-        ) : (
-          <p>Loading User profile</p>
-        )}
         <SuggestedFriendCard token={auth.token} />
       </div>
     </div>

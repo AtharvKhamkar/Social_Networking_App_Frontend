@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const USER_URL = "https://social-networking-app.onrender.com/api/v1";
+const USER_URL = "http://localhost:9090/api/v1";
 
 export const fetchOtherUser = createAsyncThunk(
     'other/user',
@@ -23,6 +23,55 @@ export const fetchOtherUser = createAsyncThunk(
             }
 
             return rejectWithValue(error.response.data)
+        }
+    }
+)
+
+export const otherUserPostDetails = createAsyncThunk(
+    'other/postDetails',
+    async ({ token, page, limit,_id }, { rejectWithValue }) => {
+        try {
+            const response = await axios({
+                method: 'GET',
+                url: `${USER_URL}/users/user-posts/${_id}?page=${page}&limit=${limit}`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization':`Bearer ${token}`
+                }
+            })
+
+            return response.data.response.docs;
+        } catch (error) {
+            if (!error.message) {
+                throw error;
+            }
+
+            rejectWithValue(error.response.data);
+        }
+    }
+    
+)
+
+export const followUnfollow = createAsyncThunk(
+    'other/follow',
+    async ({ token, Id }, { rejectWithValue }) => {
+        try {
+            const response = await axios({
+                method: 'PUT',
+                url: `${USER_URL}/follow/${Id}`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+
+            return response.data.response;
+        } catch (error) {
+            if (!error.message) {
+                throw error;
+            }
+
+            return rejectWithValue(error.response.data);
         }
     }
 )
