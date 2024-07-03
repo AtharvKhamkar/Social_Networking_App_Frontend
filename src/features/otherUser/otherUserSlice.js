@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchOtherUser, followUnfollow, otherUserPostDetails } from './otherUserRequest';
+import { logoutUser } from '../userRequest';
 
 
 const initialState = {
@@ -52,6 +53,19 @@ export const otherUserSlice = createSlice({
             .addCase(followUnfollow.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.payload || "failed to follow or unfollow user";
+            })
+        
+        //cases for logout user
+            .addCase(logoutUser.pending, (state) => {
+                state.status = 'pending';
+            })
+            .addCase(logoutUser.fulfilled, (state) => {
+                state.status = 'idle';
+                state.user = null;
+                state.postDetails = [];
+            })
+            .addCase(logoutUser.rejected, (state, action) => {
+                state.error = action.payload || "error while logging out in otherUser slice";
         })
     }
 })

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { suggestFriends } from '../userRequest'
+import { logoutUser, suggestFriends } from '../userRequest'
 
 
 const initialState = {
@@ -25,6 +25,20 @@ export const suggestSlice = createSlice({
             .addCase(suggestFriends.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.payload || "failed to fetch suggested users"
+            })
+        
+        //cases for logout
+            .addCase(logoutUser.pending, (state) => {
+                state.status = 'pending';
+            })
+            .addCase(logoutUser.fulfilled, (state) => {
+                state.users = [];
+                state.status = 'idle';
+                state.error = null;
+            })
+            .addCase(logoutUser.rejected, (state,action) => {
+                state.status = 'failed';
+                state.error = action.payload || 'error while logging out in suggest slice';
         })
     }
 })

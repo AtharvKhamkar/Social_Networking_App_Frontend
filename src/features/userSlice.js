@@ -45,7 +45,10 @@ export const authSlice = createSlice({
             })
             .addCase(logoutUser.fulfilled, (state) => {
                 state.status = 'succeeded';
+                state.error = null;
+                state.user = null;
                 state.token = null;
+                state.posts = [];
             })
             .addCase(logoutUser.rejected, (state, action) => {
                 state.status = 'failed',

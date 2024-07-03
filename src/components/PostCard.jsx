@@ -33,7 +33,7 @@ const PostCard = ({ post, avatar }) => {
       <div className='flex justify-between'>
         <div className='flex my-4 items-center gap-2 text-gray-500'>
           <img src={likeIcon} alt='like-icon' className='w-4 h-4' />
-          <span className='text-sm mr-4'>6</span>
+          <span className='text-sm mr-4'>{ post.like_count}</span>
           <img src={commentIcon} alt='comment-icon' className='w-5 h-5' />
           <span className='text-sm'>4</span>
         </div>

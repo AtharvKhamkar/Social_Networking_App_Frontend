@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   chatIcon,
   darkModeIcon,
@@ -28,10 +29,12 @@ const Header = () => {
     },
   ];
   return (
-    <header className='bg-[#ffffff] my-6 px-32'>
+    <header className='bg-[#ffffff] py-4 px-32'>
       <div className='flex justify-between items-center'>
         <div className='flex items-center'>
-          <p className='text-4xl font-bold text-[#12cdf2]'>Sociopedia</p>
+          <Link to={'/'}>
+            <p className='text-4xl font-bold text-[#12cdf2]'>Sociopedia</p>
+          </Link>
           <SearchBox placeholder='Search' icon={searchIcon} />
         </div>
         <div className='flex items-center'>
