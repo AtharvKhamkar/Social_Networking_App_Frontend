@@ -14,6 +14,7 @@ import searchIcon from '../assets/search.png';
 import sendRequestIcon from '../assets/send_request.png';
 import shareIcon from '../assets/share.png';
 import twitterIcon from '../assets/twitter.png';
+import heartIcon from '../assets/heart.png'
 
-export { bagIcons, chatIcon, commentIcon, darkModeIcon, dropDown, editIcon, helpIcon, likeIcon, linkedInIcon, locationIcon, notificationIcon, profileSettingIcon, searchIcon, sendRequestIcon, shareIcon, twitterIcon };
+export { bagIcons, chatIcon, commentIcon, darkModeIcon, dropDown, editIcon, helpIcon, likeIcon, linkedInIcon, locationIcon, notificationIcon, profileSettingIcon, searchIcon, sendRequestIcon, shareIcon, twitterIcon,heartIcon };
 

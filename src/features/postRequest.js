@@ -58,3 +58,27 @@ export const uploadPost = createAsyncThunk(
         }
     }
 )
+
+export const likePost = createAsyncThunk(
+    'posts/like',
+    async ({ token, Id }, { rejectWithValue }) => {
+        try {
+            const response = await axios({
+                method: 'POST',
+                url: `${POST_URL}/like/${Id}`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization':`Bearer ${token}`
+                }
+            })
+
+            return response.data.response;
+        } catch (error) {
+            if (!error.message) {
+                throw error;
+            }
+
+            return rejectWithValue(error.response.data);
+        }
+    }
+)

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getUserFeed, uploadPost } from './postRequest';
+import { getUserFeed, likePost, uploadPost } from './postRequest';
 import { loginUser, logoutUser, signupUser, userprofile } from './userRequest';
 
 const initialState = {
@@ -94,6 +94,8 @@ export const authSlice = createSlice({
                 state.status = 'failed';
                 state.error = action.payload || "failed to fetch user profile"
             })
+            
+            //cases for upload post
             .addCase(uploadPost.pending, (state) => {
                 state.status = 'loading';
             })
@@ -104,6 +106,20 @@ export const authSlice = createSlice({
             .addCase(uploadPost.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.payload || 'Error while uploading post'
+            })
+        
+        //cases for like post
+            .addCase(likePost.pending, (state) => {
+                state.status = 'pending';
+            })
+            .addCase(likePost.fulfilled, (state, action) => {
+                const likedPost = state.posts.docs.find((post) => post._id === action.payload._id);
+                likedPost.like_status = !likedPost.like_status;
+                likedPost.like_count = action.payload.like_count;
+            })
+            .addCase(likePost.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.payload || 'error while liking the post'
         })
     }
 })
