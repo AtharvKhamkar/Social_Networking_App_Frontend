@@ -12,7 +12,14 @@ const initialState = {
 export const commentSlice = createSlice({
     name: 'comment',
     initialState,
-    reducers: {},
+    reducers: {
+        clearState: (state) => {
+            state.status = 'idle';
+            state.postId = null;
+            state.comments = [];
+            state.error = null;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchComments.pending, (state) => {
@@ -30,5 +37,7 @@ export const commentSlice = createSlice({
 })
 
 export const selectComments = state => state.comment.comments;
+
+export const { clearState } = commentSlice.actions;
 
 export default commentSlice.reducer;

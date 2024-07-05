@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import { ClipLoader } from 'react-spinners';
 import {
   fetchOtherUser,
   followUnfollow,
   otherUserPostDetails,
 } from '../features/otherUser/otherUserRequest';
 import {
+  clearState,
   selectOtherUser,
   selectOtherUserPostDetails,
 } from '../features/otherUser/otherUserSlice';
@@ -17,7 +19,27 @@ const ProfileDetailCard = () => {
   const { userName } = useParams();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
+  const [drawer, setDrawer] = useState(false);
+  const [page, setPage] = useState(1);
+  const [postLoading, setPostLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const auth = useSelector(selectAuth);
+
+  const observer = useRef();
+
+  const lastPostElementRef = useCallback(
+    (node) => {
+      if (postLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [postLoading, hasMore]
+  );
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -34,8 +56,12 @@ const ProfileDetailCard = () => {
   const otherUser = useSelector(selectOtherUser);
 
   const postDetailsHandler = () => {
+    setDrawer((prevDrawer) => !prevDrawer);
+  };
+
+  useEffect(() => {
     const fetchPostDetails = async () => {
-      setLoading(true);
+      setPostLoading(true);
       await dispatch(
         otherUserPostDetails({
           token: auth.token,
@@ -44,15 +70,19 @@ const ProfileDetailCard = () => {
           _id: otherUser.user._id,
         })
       );
-      setLoading(false);
+      setPostLoading(false);
     };
 
-    if (auth.token) {
+    if (auth.token && drawer) {
       fetchPostDetails();
     }
-  };
+  }, [dispatch, auth.token, page, otherUser.user._id, drawer]);
 
   const posts = useSelector(selectOtherUserPostDetails);
+
+  useEffect(() => {
+    setHasMore(posts.length > 0 && posts.length % 9 === 0);
+  }, [posts]);
 
   const followHandler = () => {
     console.log('Follow function triggered');
@@ -72,9 +102,13 @@ const ProfileDetailCard = () => {
     }
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+  //clear the state  whenever the user navigate  to other page
+  useEffect(() => {
+    return () => {
+      dispatch(clearState());
+    };
+  }, [dispatch]);
+
   return (
     <div className='w-full bg-[#ffffff] rounded-lg p-8 text-gray-400'>
       <div className='flex space-x-8'>
@@ -109,21 +143,47 @@ const ProfileDetailCard = () => {
       </div>
       <hr className='my-8' />
       <div>
-        <Button children='See Posts' onClick={postDetailsHandler} />
+        <Button
+          children={drawer ? 'hide Posts' : 'See Posts'}
+          onClick={postDetailsHandler}
+        />
       </div>
       <div className='p-2'>
-        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2'>
-          {posts &&
-            posts.map((post) => (
-              <div key={post.id}>
-                <img
-                  src={post.content}
-                  alt={post.description}
-                  className='w-full h-48 object-cover rounded-lg'
-                />
-              </div>
-            ))}
-        </div>
+        {drawer && (
+          <>
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2'>
+              {posts &&
+                posts.map((post, index) => {
+                  if (posts.length === index + 1) {
+                    return (
+                      <div key={post.id} ref={lastPostElementRef}>
+                        <img
+                          src={post.content}
+                          alt={post.description}
+                          className='w-full h-48 object-cover rounded-lg'
+                        />
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div key={post.id}>
+                        <img
+                          src={post.content}
+                          alt={post.description}
+                          className='w-full h-48 object-cover rounded-lg'
+                        />
+                      </div>
+                    );
+                  }
+                })}
+            </div>
+          </>
+        )}
+        {loading && (
+          <div className='w-full flex justify-center items-center mt-4'>
+            <ClipLoader color={'#000'} loading={loading} size={35} />
+          </div>
+        )}
       </div>
     </div>
   );

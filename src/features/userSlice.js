@@ -74,7 +74,16 @@ export const authSlice = createSlice({
             })
             .addCase(getUserFeed.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.posts = action.payload;
+                if (action.meta.arg.page === 1) {
+                    state.posts = action.payload;
+                } else {
+                    state.posts = {
+                        ...state.posts,
+                        docs: [...state.posts.docs, ...action.payload.docs],
+                        page: action.payload.page,
+                        totalPages: action.payload.totalPages,
+                    }
+                }
             })
             .addCase(getUserFeed.rejected, (state, action) => {
                 state.status = 'failed';

@@ -6,7 +6,7 @@ import { uploadPost } from '../features/postRequest';
 import Button from './Button';
 import Input from './Input';
 
-const UploadPost = ({ token }) => {
+const UploadPost = ({ token,userPic }) => {
   const { register, handleSubmit, setValue } = useForm();
   const dispatch = useDispatch();
   const [error, setError] = useState('');
@@ -42,7 +42,7 @@ const UploadPost = ({ token }) => {
         <div className='flex items-center my-2 px-2'>
           <div className='mr-4'>
             <img
-              src='https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg'
+              src={userPic}
               alt='profile-image'
               className='rounded-full w-16 h-16 object-cover'
             />

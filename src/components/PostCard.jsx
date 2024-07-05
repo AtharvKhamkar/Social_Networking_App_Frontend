@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { heartIcon } from '../assets';
 import commentIcon from '../assets/comment.png';
 import likeIcon from '../assets/like.png';
 import sendRequestIcon from '../assets/send_request.png';
 import shareIcon from '../assets/share.png';
 import { fetchComments } from '../features/comment/commentRequest';
-import { selectComments } from '../features/comment/commentSlice';
+import { clearState, selectComments } from '../features/comment/commentSlice';
 import { likePost } from '../features/postRequest';
 import { selectAuth } from '../features/userSlice';
 import CommentBox from './CommentBox';
 
-const PostCard = ({ post, avatar }) => {
+const PostCard = ({ post, avatar }, ref) => {
   const [liked, setLiked] = useState(post.like_status);
   const [showComment, setShowComment] = useState(false);
   const [like_count, setLike_count] = useState(post.like_count);
@@ -26,14 +27,20 @@ const PostCard = ({ post, avatar }) => {
   };
 
   const commentHandler = () => {
+    if (!showComment) {
+      dispatch(fetchComments({ token: auth.token, postId: post._id }));
+    } else {
+      dispatch(clearState());
+    }
+
     setShowComment(!showComment);
-    dispatch(fetchComments({ token: auth.token, postId: post._id }));
   };
 
   const allPostComments = useSelector(selectComments);
-  console.log(allPostComments);
+
+  console.log(showComment);
   return (
-    <div className='w-full bg-white rounded-lg p-4 text-gray-400'>
+    <div ref={ref} className='w-full bg-white rounded-lg p-4 text-gray-400'>
       <div className='flex justify-between items-center my-2'>
         <div className='flex gap-4'>
           <img
@@ -42,7 +49,9 @@ const PostCard = ({ post, avatar }) => {
             className='rounded-full w-12 h-12 object-cover'
           />
           <div>
-            <p className='text-gray-500 font-semibold'>{post.owner}</p>
+            <Link to={`/${post.owner}`}>
+              <p className='text-gray-500 font-semibold'>{post.owner}</p>
+            </Link>
             <p className='text-sm'>New York, CA</p>
           </div>
         </div>
@@ -84,9 +93,11 @@ const PostCard = ({ post, avatar }) => {
           <img src={shareIcon} alt='share-icon' className='w-4 h-4' />
         </div>
       </div>
-      <button onClick={commentHandler} className='mb-2'>
-        View all {post.comment_count} comments
-      </button>
+      {post?.comment_count > 0 && (
+        <button onClick={commentHandler} className='mb-2'>
+          View all {post.comment_count} comments
+        </button>
+      )}
       {showComment && (
         <div>
           <hr />
@@ -103,4 +114,4 @@ const PostCard = ({ post, avatar }) => {
   );
 };
 
-export default PostCard;
+export default React.forwardRef(PostCard);

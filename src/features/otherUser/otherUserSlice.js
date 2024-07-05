@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchOtherUser, followUnfollow, otherUserPostDetails } from './otherUserRequest';
 import { logoutUser } from '../userRequest';
+import { fetchOtherUser, followUnfollow, otherUserPostDetails } from './otherUserRequest';
 
 
 const initialState = {
@@ -13,7 +13,17 @@ const initialState = {
 export const otherUserSlice = createSlice({
     name: 'other_user',
     initialState,
-    reducers: {},
+    reducers: {
+        clearPosts: (state) => {
+            state.postDetails = [];
+        },
+        clearState: (state) => {
+            state.status = 'idle';
+            state.error = null;
+            state.user = null;
+            state.postDetails = [];
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchOtherUser.pending, (state) => {
@@ -69,6 +79,8 @@ export const otherUserSlice = createSlice({
         })
     }
 })
+
+export const { clearPosts,clearState } = otherUserSlice.actions;
 
 export const selectOtherUser = (state) => state.otherUser.user;
 export const selectOtherUserPostDetails = (state) => state.otherUser.postDetails;
