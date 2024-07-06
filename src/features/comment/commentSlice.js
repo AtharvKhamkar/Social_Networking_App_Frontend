@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchComments } from './commentRequest';
+import { fetchComments, uploadComment } from './commentRequest';
 
 const initialState = {
     status: 'idle',                  //idle loading succeeded failed
@@ -32,6 +32,18 @@ export const commentSlice = createSlice({
             .addCase(fetchComments.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload || "error while fetching comments"
+            })
+        //cases for adding comment
+            .addCase(uploadComment.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(uploadComment.fulfilled, (state, action) => {
+                state.comments.push(action.payload);
+                state.postId = action.payload.post;
+            })
+            .addCase(uploadComment.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload || "error while uploading comment"
         })
     }
 })

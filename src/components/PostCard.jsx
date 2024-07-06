@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { heartIcon } from '../assets';
@@ -6,16 +7,22 @@ import commentIcon from '../assets/comment.png';
 import likeIcon from '../assets/like.png';
 import sendRequestIcon from '../assets/send_request.png';
 import shareIcon from '../assets/share.png';
-import { fetchComments } from '../features/comment/commentRequest';
+import {
+  fetchComments,
+  uploadComment,
+} from '../features/comment/commentRequest';
 import { clearState, selectComments } from '../features/comment/commentSlice';
 import { likePost } from '../features/postRequest';
 import { selectAuth } from '../features/userSlice';
 import CommentBox from './CommentBox';
+import InputCommentBox from './InputCommentBox';
 
 const PostCard = ({ post, avatar }, ref) => {
   const [liked, setLiked] = useState(post.like_status);
   const [showComment, setShowComment] = useState(false);
   const [like_count, setLike_count] = useState(post.like_count);
+  const [showCommentBox, setShowCommentBox] = useState(false);
+  const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
 
   const auth = useSelector(selectAuth);
@@ -34,6 +41,27 @@ const PostCard = ({ post, avatar }, ref) => {
     }
 
     setShowComment(!showComment);
+  };
+
+  const addCommentHandler = () => {
+    setShowCommentBox(true);
+  };
+
+  const uploadCommentHandler = (data) => {
+    setShowCommentBox(false);
+    const uploadCommentFunction = async () => {
+      await dispatch(
+        uploadComment({
+          token: auth?.token,
+          postId: post?._id,
+          content: data.comment,
+        })
+      );
+    };
+
+    if (auth?.token) {
+      uploadCommentFunction();
+    }
   };
 
   const allPostComments = useSelector(selectComments);
@@ -84,7 +112,7 @@ const PostCard = ({ post, avatar }, ref) => {
           >
             {post.like_count}
           </span>
-          <button>
+          <button onClick={addCommentHandler}>
             <img src={commentIcon} alt='comment-icon' className='w-5 h-5' />
           </button>
           <span className='text-sm'>{post.comment_count}</span>
@@ -93,6 +121,22 @@ const PostCard = ({ post, avatar }, ref) => {
           <img src={shareIcon} alt='share-icon' className='w-4 h-4' />
         </div>
       </div>
+      {showCommentBox ? (
+        <div>
+          <form onSubmit={handleSubmit(uploadCommentHandler)} className='flex'>
+            <InputCommentBox
+              placeholder='Add comment...'
+              {...register('comment', {
+                required: true,
+              })}
+            />
+            <button className='bg-transparent text-[#12cdf2]' type='submit'>
+              Post
+            </button>
+          </form>
+          <hr />
+        </div>
+      ) : null}
       {post?.comment_count > 0 && (
         <button onClick={commentHandler} className='mb-2'>
           View all {post.comment_count} comments
