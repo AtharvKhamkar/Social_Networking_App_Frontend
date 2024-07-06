@@ -44,7 +44,7 @@ const PostCard = ({ post, avatar }, ref) => {
       <div className='flex justify-between items-center my-2'>
         <div className='flex gap-4'>
           <img
-            src={avatar}
+            src={post.avatar}
             alt='profile-image'
             className='rounded-full w-12 h-12 object-cover'
           />

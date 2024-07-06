@@ -12,6 +12,7 @@ import {
   selectUserPosts,
   selectUserProfile,
 } from '../features/userSlice';
+import ShimmerHomePage from '../components/ShimmerHomePage';
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -72,7 +73,7 @@ const HomePage = () => {
   }, [userPostsInfo]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <ShimmerHomePage />;
   }
 
   return (

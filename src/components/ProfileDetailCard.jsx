@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import Modal from 'react-modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
@@ -8,12 +9,14 @@ import {
   otherUserPostDetails,
 } from '../features/otherUser/otherUserRequest';
 import {
+  clearPosts,
   clearState,
   selectOtherUser,
   selectOtherUserPostDetails,
 } from '../features/otherUser/otherUserSlice';
 import { selectAuth } from '../features/userSlice';
 import Button from './Button';
+import PostCard from './PostCard';
 
 const ProfileDetailCard = () => {
   const { userName } = useParams();
@@ -23,6 +26,8 @@ const ProfileDetailCard = () => {
   const [page, setPage] = useState(1);
   const [postLoading, setPostLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const auth = useSelector(selectAuth);
 
   const observer = useRef();
@@ -44,39 +49,38 @@ const ProfileDetailCard = () => {
   useEffect(() => {
     const fetchUser = async () => {
       setLoading(true);
-      await dispatch(fetchOtherUser({ token: auth.token, userName: userName }));
+      await dispatch(
+        fetchOtherUser({ token: auth?.token, userName: userName })
+      );
       setLoading(false);
     };
 
     if (auth.token) {
       fetchUser();
     }
-  }, [dispatch, auth.token, userName]);
+  }, [dispatch, auth?.token, userName]);
 
   const otherUser = useSelector(selectOtherUser);
 
-  const postDetailsHandler = () => {
-    setDrawer((prevDrawer) => !prevDrawer);
-  };
-
   useEffect(() => {
     const fetchPostDetails = async () => {
+      if (!otherUser?.user?._id) return;
       setPostLoading(true);
       await dispatch(
         otherUserPostDetails({
-          token: auth.token,
-          page: 1,
+          token: auth?.token,
+          page: page,
           limit: 9,
-          _id: otherUser.user._id,
+          _id: otherUser?.user._id,
         })
       );
       setPostLoading(false);
     };
 
-    if (auth.token && drawer) {
+    if (auth?.token && drawer) {
       fetchPostDetails();
     }
-  }, [dispatch, auth.token, page, otherUser.user._id, drawer]);
+  }, [dispatch, auth?.token, page, otherUser?.user._id, drawer]);
 
   const posts = useSelector(selectOtherUserPostDetails);
 
@@ -87,19 +91,37 @@ const ProfileDetailCard = () => {
   const followHandler = () => {
     console.log('Follow function triggered');
     const followFunction = async () => {
-      setLoading(true);
+      if (!otherUser?.user?._id) return;
       await dispatch(
         followUnfollow({
-          token: auth.token,
-          Id: otherUser.user._id,
+          token: auth?.token,
+          Id: otherUser?.user._id,
         })
       );
-      setLoading(false);
     };
 
     if (auth.token) {
       followFunction();
     }
+  };
+
+  const postDetailsHandler = () => {
+    if (drawer) {
+      dispatch(clearPosts());
+      setPage(1);
+    }
+
+    setDrawer(!drawer);
+  };
+
+  const openModal = (post) => {
+    setSelectedPost(post);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedPost(null);
+    setIsModalOpen(false);
   };
 
   //clear the state  whenever the user navigate  to other page
@@ -111,36 +133,45 @@ const ProfileDetailCard = () => {
 
   return (
     <div className='w-full bg-[#ffffff] rounded-lg p-8 text-gray-400'>
-      <div className='flex space-x-8'>
-        <img
-          src={otherUser?.user.avatar}
-          alt='profile-photo'
-          className='rounded-full w-48 h-48 object-cover'
-        />
-        <div className='space-y-8 w-full'>
-          <p className='text-black font-bold text-5xl text-start'>
-            {otherUser?.user.userName}
-          </p>
-          <div className='flex justify-between text-xl font-semibold'>
-            <span>{otherUser?.user.posts.length} Posts</span>
-            <span>{otherUser?.followers} Followers</span>
-            <span>{otherUser?.following} Following</span>
-          </div>
-          <div>
-            <div className='flex justify-between'>
-              <p className='text-xl'>{otherUser?.user.name}</p>
-              <div className='w-30'>
-                {otherUser?.followingStatus === false ? (
-                  <Button children='Follow' onClick={followHandler}></Button>
-                ) : (
-                  <Button children='Following' onClick={followHandler}></Button>
-                )}
-              </div>
+      {loading ? (
+        <div className='w-full flex justify-center items-center mt-4'>
+          <ClipLoader color={'#000'} loading={loading} size={35} />
+        </div>
+      ) : (
+        <div className='flex space-x-8'>
+          <img
+            src={otherUser?.user.avatar}
+            alt='profile-photo'
+            className='rounded-full w-48 h-48 object-cover'
+          />
+          <div className='space-y-8 w-full'>
+            <p className='text-black font-bold text-5xl text-start'>
+              {otherUser?.user.userName}
+            </p>
+            <div className='flex justify-between text-xl font-semibold'>
+              <span>{otherUser?.user.posts.length} Posts</span>
+              <span>{otherUser?.followers} Followers</span>
+              <span>{otherUser?.following} Following</span>
             </div>
-            <span className='text-lg'>{otherUser?.user.bio || 'Bio'}</span>
+            <div>
+              <div className='flex justify-between'>
+                <p className='text-xl'>{otherUser?.user.name}</p>
+                <div className='w-30'>
+                  {otherUser?.followingStatus === false ? (
+                    <Button children='Follow' onClick={followHandler}></Button>
+                  ) : (
+                    <Button
+                      children='Following'
+                      onClick={followHandler}
+                    ></Button>
+                  )}
+                </div>
+              </div>
+              <span className='text-lg'>{otherUser?.user.bio || 'Bio'}</span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <hr className='my-8' />
       <div>
         <Button
@@ -158,9 +189,10 @@ const ProfileDetailCard = () => {
                     return (
                       <div key={post.id} ref={lastPostElementRef}>
                         <img
-                          src={post.content}
-                          alt={post.description}
+                          src={post?.content}
+                          alt={post?.description}
                           className='w-full h-48 object-cover rounded-lg'
+                          onClick={() => openModal(post)}
                         />
                       </div>
                     );
@@ -168,9 +200,10 @@ const ProfileDetailCard = () => {
                     return (
                       <div key={post.id}>
                         <img
-                          src={post.content}
-                          alt={post.description}
+                          src={post?.content}
+                          alt={post?.description}
                           className='w-full h-48 object-cover rounded-lg'
+                          onClick={() => openModal(post)}
                         />
                       </div>
                     );
@@ -184,6 +217,23 @@ const ProfileDetailCard = () => {
             <ClipLoader color={'#000'} loading={loading} size={35} />
           </div>
         )}
+        <Modal
+          isOpen={isModalOpen}
+          onRequestClose={closeModal}
+          contentLabel='Post Details'
+          className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-40'
+          overlayClassName='fixed inset-0 bg-black bg-opacity-75'
+          onClick={closeModal}
+        >
+          {selectedPost && (
+            <div
+              className='bg-white rounded-lg p-4 w-full max-w-3xl'
+              onClick={(e) => e.stopPropagation()}
+            >
+              <PostCard post={selectedPost} avatar={selectedPost.avatar} />
+            </div>
+          )}
+        </Modal>
       </div>
     </div>
   );
