@@ -9,7 +9,13 @@ const SuggestedFriendCard = ({ token }) => {
 
   useEffect(() => {
     const fetchSuggestedUsers = async () => {
-      await dispatch(suggestFriends({ token }));
+      await dispatch(
+        suggestFriends({
+          token,
+          page: 1,
+          limit: 5,
+        })
+      );
     };
 
     if (token) {

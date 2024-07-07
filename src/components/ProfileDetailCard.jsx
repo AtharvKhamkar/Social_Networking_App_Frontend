@@ -17,6 +17,7 @@ import {
 import { selectAuth } from '../features/userSlice';
 import Button from './Button';
 import PostCard from './PostCard';
+import ShimmerProfileDetail from './ShimmerProfileDetail';
 
 const ProfileDetailCard = () => {
   const { userName } = useParams();
@@ -134,9 +135,7 @@ const ProfileDetailCard = () => {
   return (
     <div className='w-full bg-[#ffffff] rounded-lg p-8 text-gray-400'>
       {loading ? (
-        <div className='w-full flex justify-center items-center mt-4'>
-          <ClipLoader color={'#000'} loading={loading} size={35} />
-        </div>
+        <ShimmerProfileDetail />
       ) : (
         <div className='flex space-x-8'>
           <img
@@ -212,9 +211,9 @@ const ProfileDetailCard = () => {
             </div>
           </>
         )}
-        {loading && (
+        {postLoading && (
           <div className='w-full flex justify-center items-center mt-4'>
-            <ClipLoader color={'#000'} loading={loading} size={35} />
+            <ClipLoader color={'#000'} loading={postLoading} size={35} />
           </div>
         )}
         <Modal

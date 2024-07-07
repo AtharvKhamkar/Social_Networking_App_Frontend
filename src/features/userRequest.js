@@ -97,11 +97,11 @@ export const signupUser = createAsyncThunk(
 
 export const suggestFriends = createAsyncThunk(
     'users/suggestFriend',
-    async ({ token }, { rejectWithValue }) => {
+    async ({ token,page,limit }, { rejectWithValue }) => {
         try {
             const response = await axios({
                 method: 'GET',
-                url: `${USER_URL}/users/suggest-friends`,
+                url: `${USER_URL}/users/suggest-friends?page=${page}&limit=${limit}`,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization':`Bearer ${token}`
