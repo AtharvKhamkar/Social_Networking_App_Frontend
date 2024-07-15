@@ -138,5 +138,6 @@ export const { setMode, setLogin, setLogout, setPosts } = authSlice.actions;
 export const selectAuth = (state) => state.auth;
 export const selectUserProfile = (state) => state.auth.user;
 export const selectUserPosts = (state) => state.auth.posts;
+export const checkLoggedIn = (state) => state.auth.token;
 
 export default authSlice.reducer;

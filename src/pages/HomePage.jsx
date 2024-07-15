@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ClipLoader } from 'react-spinners';
 import PostCard from '../components/PostCard';
+import ShimmerHomePage from '../components/ShimmerHomePage';
 import SuggestedFriendCard from '../components/SuggestedFriendCard';
 import UploadPost from '../components/UploadPost';
 import UserProfileCard from '../components/UserProfileCard';
@@ -12,7 +13,7 @@ import {
   selectUserPosts,
   selectUserProfile,
 } from '../features/userSlice';
-import ShimmerHomePage from '../components/ShimmerHomePage';
+import WelcomePage from './WelcomePage';
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -24,6 +25,8 @@ const HomePage = () => {
   const [hasMore, setHasMore] = useState(true);
 
   const observer = useRef();
+
+  let loggedInUser = auth.token ? true : false;
 
   const lastPostElementRef = useCallback(
     (node) => {
@@ -76,7 +79,9 @@ const HomePage = () => {
     return <ShimmerHomePage />;
   }
 
-  return (
+  return !loggedInUser ? (
+    <WelcomePage />
+  ) : (
     <div className='flex w-full min-h-screen bg-[#eeeeee] font-roboto gap-16 px-32 py-8'>
       <div className='w-1/3'>
         {userProfile ? (

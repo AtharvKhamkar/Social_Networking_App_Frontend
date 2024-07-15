@@ -2,14 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import Test from './Test.jsx';
 import { store } from './app/store.js';
+import AuthLayout from './components/AuthLayout.jsx';
 import './index.css';
 import HomePage from './pages/HomePage.jsx';
 import Layout from './pages/Layout.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 import SignupPage from './pages/SignupPage.jsx';
+import WelcomePage from './pages/WelcomePage.jsx';
 
 const route = createBrowserRouter([
   {
@@ -22,7 +23,11 @@ const route = createBrowserRouter([
       },
       {
         path: '/login',
-        element: <LoginPage />,
+        element: (
+          <AuthLayout authentication={true}>
+            <LoginPage />
+          </AuthLayout>
+        ),
       },
       {
         path: '/signup',
@@ -30,7 +35,7 @@ const route = createBrowserRouter([
       },
       {
         path: '/Test',
-        element: <Test />,
+        element: <WelcomePage />,
       },
       {
         path: '/:userName',
