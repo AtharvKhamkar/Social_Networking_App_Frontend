@@ -43,6 +43,6 @@ export const suggestSlice = createSlice({
     }
 })
 
-export const selectSuggestedUsers = (state) => state.suggest.users;
+export const selectSuggestedUsers = (state) => state.suggest.users.docs;
 
 export default suggestSlice.reducer;

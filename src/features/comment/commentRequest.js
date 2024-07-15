@@ -1,7 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import conf from "../../conf/conf";
 
-const COMMENT_URL = "http://localhost:9090/api/v1";
+const COMMENT_URL = conf.projectBaseUrl;
 
 export const fetchComments = createAsyncThunk(
     'comment/fetch',

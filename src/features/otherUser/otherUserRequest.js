@@ -1,7 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import conf from '../../conf/conf';
 
-const USER_URL = "http://localhost:9090/api/v1";
+const USER_URL = conf.projectBaseUrl;
 
 export const fetchOtherUser = createAsyncThunk(
     'other/user',

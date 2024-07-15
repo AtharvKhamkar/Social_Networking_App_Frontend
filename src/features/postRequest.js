@@ -1,7 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import conf from '../conf/conf';
 
-const POST_URL = 'http://localhost:9090/api/v1';
+const POST_URL = conf.projectBaseUrl;
 
 export const getUserFeed = createAsyncThunk(
     'posts/userposts',
